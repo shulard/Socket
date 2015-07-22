@@ -157,6 +157,10 @@ class Socket
         } catch( Exception $error ) {
             //If the transport is not valid, try to transpose it
             $translation = ApplicationLayer\Translate::get($matches['scheme']);
+            if( $translation === false ) {
+                throw $error;
+            }
+
             $this->setPort($translation->getPort());
             $this->setTransport($translation->getTransport());
             $this->_secured = $translation->isSecured();

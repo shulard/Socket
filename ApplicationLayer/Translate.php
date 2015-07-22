@@ -62,13 +62,10 @@ class Translate
      *
      * @param  string $scheme
      * @return Translation
-     * @throws UnknownApplicationLayerException
      */
     public static function get($scheme) {
         if( !isset(self::$schemes[$scheme]) ) {
-            throw new UnknownApplicationLayerException(
-                sprintf("The scheme %s can't be translated because it is not registered !",$scheme)
-            );
+            return false;
         }
 
         return new Translation(
