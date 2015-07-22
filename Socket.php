@@ -152,7 +152,15 @@ class Socket
             );
         }
 
-        $this->setTransport($matches['scheme']);
+        try {
+            $this->setTransport($matches['scheme']);
+        } catch( Exception $error ) {
+            //If the transport is not valid, try to transpose it
+            $translation = ApplicationLayer\Translate::get($matches['scheme']);
+            $this->setPort($translation->getPort());
+            $this->setTransport($translation->getTransport());
+            $this->_secured = $translation->isSecured();
+        }
 
         if (isset($matches['ipv6_']) && !empty($matches['ipv6_'])) {
             $this->_address     = $matches['ipv6_'];
