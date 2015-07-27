@@ -348,6 +348,7 @@ abstract class Connection
         $parsed = parse_url($socketUri);
         if (null !== $wrapper =
             Socket\Transport::getWrapper($parsed['scheme'])) {
+            $socket = call_user_func($wrapper, $socketUri);
             if( !($socket instanceof Socket) ) {
                 throw new Socket\Exception(
                     'The wrapper registered for scheme %s is not valid '.
