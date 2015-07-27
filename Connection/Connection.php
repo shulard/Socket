@@ -341,6 +341,7 @@ abstract class Connection
      *
      * @param   string  $socketUri    Socket URI.
      * @return  \Hoa\Socket
+     * @throws  \Hoa\Socket\Exception
      */
     protected function setSocket($socketUri)
     {
@@ -348,6 +349,13 @@ abstract class Connection
 
         if (null !== $wrapper = Socket\Transport::getWrapper($parsed['scheme'])) {
             $socket = $wrapper($socketUri);
+            if( !($socket instanceof Socket) ) {
+                throw new Socket\Exception(
+                    'The wrapper registered for scheme %s is not valid '.
+                    'it must return a valid Hoa\Socket instance',
+                    0,
+                    $parsed['scheme']);
+            }
         } else {
             $socket = new Socket($socketUri);
         }
