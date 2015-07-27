@@ -103,6 +103,26 @@ class Transport
     }
 
     /**
+     * Share a wrapper factory between different protocols
+     * @param  string $protocol The protocol to used
+     * @param  string $shared   The shared used as factory
+     * @return void
+     */
+    public static function shareWrapper($protocol, $shared)
+    {
+        if( !isset(static::$_wrappers[$shared]) ) {
+            throw new Exception(
+                'Can\'t shared an unknown wrapper %s!',
+                0,
+                $shared);
+        }
+
+        static::$_wrappers[$protocol] = $shared;
+
+        return;
+    }
+
+    /**
      * Check if a wrapper exists in the collection
      *
      * @param  string $protocol The protocol to check
@@ -124,6 +144,9 @@ class Transport
             return null;
         }
 
-        return static::$_wrappers[$protocol];
+        $value = static::$_wrappers[$protocol];
+        return is_string($value) && isset(static::$_wrappers[$value])?
+            static::$_wrappers[$value]:
+            $value;
     }
 }
