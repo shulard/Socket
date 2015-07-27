@@ -46,6 +46,12 @@ namespace Hoa\Socket;
  */
 class Transport
 {
+    /**
+     * A collection of scheme wrappers
+     * They are used to transformed an URI regarding to its application scheme
+     *
+     * @var array
+     */
     protected static $_wrappers = [];
 
     /**
@@ -75,18 +81,36 @@ class Transport
         return in_array(strtolower($transport), self::get());
     }
 
-    public static function registerWrapper($protocol, callable $className)
+    /**
+     * Register a new wrapper in the collection
+     *
+     * @param  string   $protocol The registered protocol ws, wss, http...
+     * @param  callable $factory  The factory callable
+     * @return void
+     */
+    public static function registerWrapper($protocol, callable $factory)
     {
         static::$_wrappers[$protocol] = $className;
 
         return;
     }
 
+    /**
+     * Check if a wrapper exists in the collection
+     *
+     * @param  string $protocol The protocol to check
+     * @return callable         The linked factory callable
+     */
     public static function wrapperExists($protocol)
     {
         return true === array_key_exists($protocol, static::$_wrappers);
     }
 
+    /**
+     * Retrieve the wrapper registered for a protocol
+     * @param  string $protocol The protocol to search
+     * @return callable|null    The factory callable if found, null if not
+     */
     public static function getWrapper($protocol)
     {
         if (false === static::wrapperExists($protocol)) {

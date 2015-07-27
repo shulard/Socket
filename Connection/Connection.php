@@ -337,6 +337,7 @@ abstract class Connection
 
     /**
      * Set socket.
+     * A wrapper can be registered to handle application layer transport
      *
      * @param   string  $socketUri    Socket URI.
      * @return  \Hoa\Socket
