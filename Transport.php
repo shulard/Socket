@@ -90,7 +90,14 @@ class Transport
      */
     public static function registerWrapper($protocol, callable $factory)
     {
-        static::$_wrappers[$protocol] = $className;
+        if( isset(static::$_wrappers[$protocol]) ) {
+            throw new Exception(
+                'The protocol wrapper for %s is already registered!',
+                0,
+                $protocol);
+        }
+
+        static::$_wrappers[$protocol] = $factory;
 
         return;
     }
