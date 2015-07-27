@@ -46,6 +46,8 @@ namespace Hoa\Socket;
  */
 class Transport
 {
+    protected static $_wrappers = [];
+
     /**
      * Get all enable transports.
      *
@@ -71,5 +73,26 @@ class Transport
     public static function exists($transport)
     {
         return in_array(strtolower($transport), self::get());
+    }
+
+    public static function registerWrapper($protocol, callable $className)
+    {
+        static::$_wrappers[$protocol] = $className;
+
+        return;
+    }
+
+    public static function wrapperExists($protocol)
+    {
+        return true === array_key_exists($protocol, static::$_wrappers);
+    }
+
+    public static function getWrapper($protocol)
+    {
+        if (false === static::wrapperExists($protocol)) {
+            return null;
+        }
+
+        return static::$_wrappers[$protocol];
     }
 }
