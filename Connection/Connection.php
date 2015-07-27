@@ -338,13 +338,21 @@ abstract class Connection
     /**
      * Set socket.
      *
-     * @param   string  $socket    Socket URI.
+     * @param   string  $socketUri    Socket URI.
      * @return  \Hoa\Socket
      */
-    protected function setSocket($socket)
+    protected function setSocket($socketUri)
     {
+        $parsed = parse_url($socketUri);
+
+        if (null !== $wrapper = Socket\Transport::getWrapper($parsed['scheme'])) {
+            $socket = $wrapper($socketUri);
+        } else {
+            $socket = new Socket($socketUri);
+        }
+
         $old           = $this->_socket;
-        $this->_socket = new Socket($socket);
+        $this->_socket = $socket;
 
         return $old;
     }

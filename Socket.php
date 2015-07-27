@@ -104,12 +104,6 @@ class Socket
      */
     protected $_transport   = null;
 
-    /**
-     * Flag to identify if the socket is secured or not
-     *
-     * @var boolean
-     */
-    protected $_secured     = false;
 
 
     /**
@@ -152,19 +146,7 @@ class Socket
             );
         }
 
-        try {
-            $this->setTransport($matches['scheme']);
-        } catch( Exception $error ) {
-            //If the transport is not valid, try to transpose it
-            $translation = ApplicationLayer\Translate::get($matches['scheme']);
-            if( $translation === false ) {
-                throw $error;
-            }
-
-            $this->setPort($translation->getPort());
-            $this->setTransport($translation->getTransport());
-            $this->_secured = $translation->isSecured();
-        }
+        $this->setTransport($matches['scheme']);
 
         if (isset($matches['ipv6_']) && !empty($matches['ipv6_'])) {
             $this->_address     = $matches['ipv6_'];
@@ -321,16 +303,6 @@ class Socket
     public function getTransport()
     {
         return $this->_transport;
-    }
-
-    /**
-     * Check if the socket is secured or not
-     *
-     * @return boolean
-     */
-    public function isSecured()
-    {
-        return $this->_secured;
     }
 
     /**
